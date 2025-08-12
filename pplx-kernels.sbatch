@@ -5,7 +5,7 @@
 
 #SBATCH --job-name=pplx-ker
 #SBATCH --nodes=2
-#SBATCH --ntasks-per-node 8
+#SBATCH --ntasks-per-node 1
 ##SBATCH --output %x_%j.out
 ##SBATCH --error %x_%j.err
 #SBATCH --exclusive
@@ -61,11 +61,11 @@ mpirun -N 1 bash -c 'echo $(hostname): $(cat /sys/devices/virtual/dmi/id/board_a
 
 export MASTER_PORT=29500
 export MASTER_ADDR=$(scontrol show hostname ${SLURM_NODELIST} | head -n 1)
-export WORLD_SIZE=${SLURM_NPROCS}
+export WORLD_SIZE=$((${SLURM_NNODES} * 8))
 
 export PYTHONFAULTHANDLER=1
 
 srun --container-image ./pplx-kernels.sqsh \
     --mpi=pmix --cpu-bind=none \
     --container-mounts=$(pwd)/coredump:/tmp/coredump,$(pwd)/data:/pplx-kernels/data \
-    bash -c "RANK=\${SLURM_PROCID} python3 -X faulthandler launch_bench_all_to_all.py"
+    bash -c "RANK=\${SLURM_PROCID} NODE_RANK=\${SLURM_NODEID} WORLD_LOCAL_SIZE=8 python3 -X faulthandler -m tests.bench_all_to_all"
