@@ -6,10 +6,11 @@ FROM nvidia/cuda:${CUDA_VERSION}-devel-ubuntu22.04
 ################################ NCCL ########################################
 
 ARG GDRCOPY_VERSION=v2.4.4
-ARG EFA_INSTALLER_VERSION=1.42.0
-ARG AWS_OFI_NCCL_VERSION=v1.16.0
-ARG NCCL_VERSION=v2.27.5-1
+ARG EFA_INSTALLER_VERSION=1.43.2
+ARG AWS_OFI_NCCL_VERSION=v1.16.1
+ARG CUSTOM_NCCL_VERSION=v2.27.5-1
 ARG NCCL_TESTS_VERSION=v2.16.4
+ARG NVSHMEM_VERSION=3.3.9
 
 RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get remove -y --allow-change-held-packages \
@@ -89,7 +90,7 @@ RUN cd $HOME \
 
 ###################################################
 ## Install NCCL
-RUN git clone -b ${NCCL_VERSION} https://github.com/NVIDIA/nccl.git  /opt/nccl \
+RUN git clone -b ${CUSTOM_NCCL_VERSION} https://github.com/NVIDIA/nccl.git  /opt/nccl \
     && cd /opt/nccl \
     && make -j $(nproc) src.build CUDA_HOME=/usr/local/cuda \
     NVCC_GENCODE="-gencode=arch=compute_80,code=sm_80 -gencode=arch=compute_86,code=sm_86 -gencode=arch=compute_89,code=sm_89 -gencode=arch=compute_90,code=sm_90 -gencode=arch=compute_100,code=sm_100"

@@ -21,12 +21,10 @@ set -ex;
 ###########################
 
 ## Set libfabric flags to use EFA
-export FI_PROVIDER=efa
-export FI_EFA_USE_DEVICE_RDMA=1 # use for p4d
-export FI_EFA_FORK_SAFE=1
+export FI_EFA_ENABLE_SHM_TRANSFER=0
 
 ## Set this flag for debugging EFA
-# export FI_LOG_LEVEL=warn
+export FI_LOG_LEVEL=warn
 
 ## NCCL Environment variables
 # export NCCL_DEBUG=INFO
@@ -35,6 +33,7 @@ export FI_EFA_FORK_SAFE=1
 ### Increase the send queue depth and can turn NCCL communications into non-blocking.
 ### https://www.usenix.org/system/files/atc23-choi.pdf
 export NCCL_BUFFSIZE=8388608
+
 ### Improve performance by increasing buffer size for Send/Recv, Gather, Scatter and Alltoall communications
 ### https://docs.nvidia.com/deeplearning/nccl/user-guide/docs/usage/p2p.html
 export NCCL_P2P_NET_CHUNKSIZE=1048576
@@ -43,15 +42,12 @@ export NCCL_P2P_NET_CHUNKSIZE=1048576
 ### message size and number of ranks.
 ### More information https://github.com/aws/aws-ofi-nccl/wiki/Algorithm-and-Protocol-Tuner-for-AWS.
 export NCCL_TUNER_PLUGIN=/opt/aws-ofi-nccl/install/lib/libnccl-ofi-tuner.so
-
 export NVSHMEM_DIR=/opt/nvshmem
-
 export LD_LIBRARY_PATH=/opt/nvshmem/lib:$LD_LIBRARY_PATH
-
 export NVSHMEM_BOOTSTRAP_PMI=PMIX
 
-# export NVSHMEM_DEBUG=TRACE
-# export NVSHMEM_DEBUG_SUBSYS=ALL
+export NVSHMEM_DEBUG=TRACE
+export NVSHMEM_DEBUG_SUBSYS=ALL
 
 export NVSHMEM_REMOTE_TRANSPORT=libfabric
 export NVSHMEM_LIBFABRIC_PROVIDER=efa

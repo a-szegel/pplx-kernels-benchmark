@@ -13,9 +13,9 @@ wget https://developer.download.nvidia.com/compute/redist/nvshmem/3.3.9/source/n
 
 ```bash
 GDRCOPY_VERSION=v2.4.4
-EFA_INSTALLER_VERSION=1.43.1
+EFA_INSTALLER_VERSION=1.43.2
 AWS_OFI_NCCL_VERSION=v1.16.1
-NCCL_VERSION=v2.27.5-1
+CUSTOM_NCCL_VERSION=v2.27.5-1
 NCCL_TESTS_VERSION=v2.16.4
 NVSHMEM_VERSION=3.3.9
 TAG="efa${EFA_INSTALLER_VERSION}-ofi${AWS_OFI_NCCL_VERSION}-nccl${NCCL_VERSION}-tests${NCCL_TESTS_VERSION}-nvshmem${NVSHMEM_VERSION}"
@@ -23,10 +23,10 @@ PPLX_CONTAINER_IMAGE_NAME_TAG="pplx-kernels:${TAG}"
 ```
 
 ```bash
-docker build --progress=plain -f ./pplx-kernels.Dockerfile \
+docker build -f ./pplx-kernels.Dockerfile \
        --build-arg="EFA_INSTALLER_VERSION=${EFA_INSTALLER_VERSION}" \
        --build-arg="AWS_OFI_NCCL_VERSION=${AWS_OFI_NCCL_VERSION}" \
-       --build-arg="NCCL_VERSION=${NCCL_VERSION}" \
+       --build-arg="CUSTOM_NCCL_VERSION=${CUSTOM_NCCL_VERSION}" \
        --build-arg="NCCL_TESTS_VERSION=${NCCL_TESTS_VERSION}" \
        --build-arg="NVSHMEM_VERSION=${NVSHMEM_VERSION}" \
        -t ${PPLX_CONTAINER_IMAGE_NAME_TAG} \
