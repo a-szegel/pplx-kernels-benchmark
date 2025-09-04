@@ -82,8 +82,8 @@ ENV PATH /opt/gdrcopy/bin:$PATH
 #################################################
 ## Install EFA installer
 RUN cd $HOME \
-    && curl -O https://efa-installer.amazonaws.com/aws-efa-installer-${EFA_INSTALLER_VERSION}.tar.gz \
-    && tar -xf $HOME/aws-efa-installer-${EFA_INSTALLER_VERSION}.tar.gz \
+    && aws s3 cp s3://aws-efa-installer-dev/aws-efa-installer-latest.tar.gz . \
+    && tar -xf $HOME/aws-efa-installer-latest.tar.gz \
     && cd aws-efa-installer \
     && ./efa_installer.sh -y -g -d --skip-kmod --skip-limit-conf --no-verify \
     && rm -rf $HOME/aws-efa-installer
@@ -154,7 +154,7 @@ COPY ./nvshmem_src /nvshmem_src
 
 RUN cd /nvshmem_src \
     && mkdir -p build \
-    && cd build \ 
+    && cd build \
     && cmake \
     -DNVSHMEM_PREFIX=/opt/nvshmem \
     -DCMAKE_INSTALL_PREFIX=/opt/nvshmem \
@@ -171,6 +171,8 @@ RUN cd /nvshmem_src \
     \
     -DNVSHMEM_LIBFABRIC_SUPPORT=1 \
     -DLIBFABRIC_HOME=/opt/amazon/efa \
+    \
+    -DNVSHMEM_EFAGDA_SUPPORT=1 \
     \
     -DNVSHMEM_MPI_SUPPORT=1 \
     -DMPI_HOME=/opt/amazon/openmpi \
